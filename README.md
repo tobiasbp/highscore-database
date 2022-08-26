@@ -10,12 +10,14 @@ We are building our api with [FastAPI](https://fastapi.tiangolo.com/)
 
 ### Windows
 ```
-environment\Scripts\activate.bat
+python3 -mvenv .venv
+.venv\Scripts\activate.bat
 pip install -r requirements.txt
 ```
 
 ### Linux
 ```
-source environment\Scripts\activate
+python3 -mvenv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
