@@ -1,6 +1,22 @@
 # highscore-database
 An API allowing for the saving and retrieval of game high scores
 
+You start the api by using the following command
+```
+python3 main.py
+```
+
+You can then test the api by using
+```
+curl http://localhost:6050/
+```
+
+The command should return a valid json response
+```
+{"message":"Hello, world!"}
+```
+
+
 # Dependencies
 
 We are building our api with [FastAPI](https://fastapi.tiangolo.com/)
@@ -20,16 +36,4 @@ pip install -r requirements.txt
 python3 -mvenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-# Running
-
-```
-python3 main.py
-```
-
-# Testing
-
-```
-curl http://localhost:6050/
 ```
