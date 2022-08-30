@@ -21,3 +21,15 @@ python3 -mvenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+# Running
+
+```
+python3 main.py
+```
+
+# Testing
+
+```
+curl http://localhost:6050/
+```
