@@ -16,6 +16,11 @@ The command should return a valid json response
 {"message":"Hello, world!"}
 ```
 
+You can get a list of games and their id
+```
+curl http://localhost:6050/v1/games/s
+```
+
 
 # Dependencies
 
