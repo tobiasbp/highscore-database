@@ -4,10 +4,24 @@ import uvicorn
 app = FastAPI()
 
 # Example data which will come from a database in the future
-games = [
+game_list = [
     {
     	"id": 0,
         "name": "Space Invaders",
+    }, 
+    {
+        "id": 1,
+        "name": "Pac-Man",
+    },
+    {
+        "id": 2,
+        "name": "Donkey Kong",
+    }
+]
+
+score_list = [
+    {
+    	"id": 0,
         "scores": [
             {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
             {"score": 500, "user": "MemeWizard42"},
@@ -16,7 +30,6 @@ games = [
     }, 
     {
         "id": 1,
-        "name": "Pac-Man",
         "scores": [
             {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
             {"score": 500, "user": "MemeWizard42"},
@@ -25,7 +38,6 @@ games = [
     },
     {
         "id": 2,
-        "name": "Donkey Kong",
         "scores": [
             {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
             {"score": 500, "user": "MemeWizard42"},
@@ -39,15 +51,15 @@ def index():
     return {"message": "Hello, world!"}
 
 @app.get("/v1/games/")
-def index():
-    return [{"id": game["id"], "name": game["name"]} for game in games]
-    
+def games():
+    return [{"id": game["id"], "name": game["name"]} for game in game_list]
+
 @app.get("/v1/scores/{id}")
-def index(id):
-    for game in games:
+def scores(id):
+    for i, game in enumerate(game_list):
         if str(game["id"]) == id:
             print(game)
-            return game
+            return {"id": game["id"], "name": game["name"], "scores": score_list[i]["scores"]}
     raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 if __name__ == '__main__':
