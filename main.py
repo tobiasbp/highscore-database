@@ -38,7 +38,7 @@ games = [
 def index():
     return {"message": "Hello, world!"}
 
-@app.get("/v1/games")
+@app.get("/v1/games/")
 def index():
     return [{"id": game["id"], "name": game["name"]} for game in games]
     
