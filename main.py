@@ -56,17 +56,33 @@ async def games():
 
 @app.get("/v1/scores/{id}")
 async def scores(id):
-    for i, game in enumerate(game_list):
-        if str(game["id"]) == id:
-            return {"id": game["id"], "name": game["name"], "scores": score_list[i]["scores"]}
+    if type(id) == type(int()):
+        for i, game in enumerate(game_list):
+            if str(game["id"]) == id:
+                return {"id": game["id"], "name": game["name"], "scores": score_list[i]["scores"]}
     raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 @app.post("/v1/scores/{id}")
 async def scores(id, request: Request):
-    for i, game in enumerate(game_list):
-        if str(game["id"]) == id:
-            print(await request.json()) 
-            pass
+    if id.isdigit():
+        for i, game in enumerate(score_list):
+            if str(game["id"]) == id:
+                score_data = await request.json()
+                try:
+                    score = int(score_data["score"])
+                    user = score_data["user"]
+                except ValueError:
+                	raise HTTPException(status_code=422, detail=f"Invalid score data: 'score' is not an integer")
+                except KeyError:
+                	raise HTTPException(status_code=422, detail=f"Invalid score data: missing field")
+                game["scores"].append({"score": score, "user": user})
+                game["scores"] = sorted(game["scores"], key=lambda d: d["score"])
+                game["scores"].reverse()
+                rank = 0
+                for i, s in enumerate(game["scores"]):
+                    if s == {"score": score, "user": user}:
+                        rank = i + 1
+                return {"rank": rank}
     raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 if __name__ == '__main__':
