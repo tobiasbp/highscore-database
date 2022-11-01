@@ -54,6 +54,15 @@ async def index():
 async def games():
     return [{"id": game["id"], "name": game["name"]} for game in game_list]
 
+@app.post("/v1/games/")
+async def games(request: Request):
+    game_data = await request.json()
+    print(game_data)
+    print(game_data["name"])
+    id = len(game_list)
+    game_list.append({"id": id, "name": game_data["name"]})
+    return game_list[id]
+
 @app.get("/v1/scores/{id}")
 async def scores(id):
     if type(id) == type(int()):
