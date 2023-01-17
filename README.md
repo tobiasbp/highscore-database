@@ -46,3 +46,9 @@ python3 -mvenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+### Deta Project Token
+
+To run the program on your own machine, you must have the deta project key stored in "DETA_PROJECT_KEY"
+To set the environment, use the command "export DETA_PROJECT_KEY={ a deta project key }"
+If the program is run in a micro, the environment variable is already configued to the project key.
