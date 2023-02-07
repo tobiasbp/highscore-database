@@ -29,32 +29,32 @@ score_list = deta.Base("scores")
 #    }
 #]
 
-score_list = [
-    {
-    	"id": 0,
-        "scores": [
-            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
-            {"score": 500, "user": "MemeWizard42"},
-            {"score": 200, "user": "Noob1234"}
-        ]
-    }, 
-    {
-        "id": 1,
-        "scores": [
-            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
-            {"score": 500, "user": "MemeWizard42"},
-            {"score": 200, "user": "Noob1234"}
-        ]
-    },
-    {
-        "id": 2,
-        "scores": [
-            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
-            {"score": 500, "user": "MemeWizard42"},
-            {"score": 200, "user": "Noob1234"}
-        ]
-    }
-]
+#score_list = [
+#    {
+#    	"id": 0,
+#        "scores": [
+#            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
+#            {"score": 500, "user": "MemeWizard42"},
+#            {"score": 200, "user": "Noob1234"}
+#        ]
+#    }, 
+#    {
+#        "id": 1,
+#        "scores": [
+#            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
+#            {"score": 500, "user": "MemeWizard42"},
+#            {"score": 200, "user": "Noob1234"}
+#        ]
+#    },
+#    {
+#        "id": 2,
+#        "scores": [
+#            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
+#            {"score": 500, "user": "MemeWizard42"},
+#            {"score": 200, "user": "Noob1234"}
+#        ]
+#    }
+#]
 
 @app.get("/")
 async def index():
@@ -79,6 +79,8 @@ async def games(id):
 
 @app.post("/v1/games/")
 async def games(request: Request):
+	raise NotImplementedError
+	"""
     game_data = await request.json()
     id = len(game_list)
     game_list.insert({
@@ -86,13 +88,7 @@ async def games(request: Request):
     	"name": game_data["name"]
     })
     return game_list[id]
-
-"""
-if type(id) == type(int()):
-     for i, game in enumerate(game_list):
-         if str(game["id"]) == id:
-             return {"id": game["id"], "name": game["name"], "scores": score_list[i]["scores"]}
-"""
+    """
 
 # This is code
 @app.get("/v1/scores/{id}")
@@ -100,16 +96,19 @@ async def scores(id):
     """
     
     """
-    game_res = game_list.fetch({"id": id}, limit=1)
+    game_res = game_list.fetch({"id": int(id)}, limit=1)
+    print()
     if len(game_res.items) != 0:
-        score_res = score_list.fetch({"id": id}, limit=10)
-        return {"id": game_res.items[0]["id"], "name": game_res.items[0]["name"], "scores": [{"score": s["score"], "user": s["user"]} for s in score_res.items]}
+        score_res = score_list.fetch({"id": int(id)}, limit=10)
+        return {"id": game_res.items[0]["id"], "name": game_res.items[0]["name"], "scores": [{"score": s["score"], "user": s["user"]} for s in score_res.items[0]["scores"]]}
     else:
         raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 @app.post("/v1/scores/{id}")
 async def scores(id, request: Request):
     if id.isdigit():
+        """
+        score_data = await request.json()
         for i, game in enumerate(score_list):
             if str(game["id"]) == id:
                 score_data = await request.json()
@@ -128,6 +127,7 @@ async def scores(id, request: Request):
                     if s == {"score": score, "user": user}:
                         rank = i + 1
                 return {"rank": rank}
+        """
     raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 if __name__ == '__main__':

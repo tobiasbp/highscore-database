@@ -3,8 +3,15 @@ on:
   - push
   - workflow_dispatch
 
+
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get data with curl
+        run: curl https://wc2sk6.deta.dev/
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2 #Be sure you check-out the repo first. Deta CLI needs access to the files
@@ -13,4 +20,4 @@ jobs:
           deta-access-token: ${{ secrets.DETA_TOKEN }} #Deta access token https://docs.deta.sh/docs/cli/auth
           deta-name: 'api' #Deta Micro name https://docs.deta.sh/docs/cli/commands/#deta-clone
           deta-project: 'highscore-database' #Optional: Deta project name https://docs.deta.sh/docs/cli/commands/#deta-clone
-          deta-project-dir: '.' #Optional: directory to be deployed on Deta. Default is the root "." 
+          deta-project-dir: './src' #Optional: directory to be deployed on Deta. Default is the root "." 

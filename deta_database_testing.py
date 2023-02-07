@@ -1,14 +1,14 @@
 from deta import Deta
 
-print("Running...")
-
 deta = Deta("a01tzp6n_pHJbLGxWzJ3zP3g58YqNJ37FXZFtaUcv")
 
-users = deta.Base("games")
+users = deta.Base("scores")
 
 users.insert({
     "id": 0,
-    "name": "Space Invaders"
+    "scores": [
+        {"score": 0, "user": "Test"}
+    ],
 })
 
 fetch_res = users.fetch({})
