@@ -3,13 +3,17 @@ on:
   - push
   - workflow_dispatch
 
+env:
+  TEST_URL: https://wc2sk6.deta.dev/
 
 jobs:
   test_pre:
     runs-on: ubuntu-latest
     steps:
+    	# Test if the url returns a valid response
       - name: Get data with curl
-        run: curl https://wc2sk6.deta.dev/
+        run: curl ${{ env.TEST_URL }}
+        
   deploy:
     needs: test_pre
     runs-on: ubuntu-latest
@@ -20,10 +24,11 @@ jobs:
           deta-access-token: ${{ secrets.DETA_TOKEN }} #Deta access token https://docs.deta.sh/docs/cli/auth
           deta-name: 'api' #Deta Micro name https://docs.deta.sh/docs/cli/commands/#deta-clone
           deta-project: 'highscore-database' #Optional: Deta project name https://docs.deta.sh/docs/cli/commands/#deta-clone
-          deta-project-dir: './src' #Optional: directory to be deployed on Deta. Default is the root "." 
+          deta-project-dir: './src' #Optional: directory to be deployed on Deta. Default is the root "."
+          
   test_post:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
       - name: Get data with curl
-        run: curl https://wc2sk6.deta.dev/
+        run: curl ${{ env.TEST_URL }}
