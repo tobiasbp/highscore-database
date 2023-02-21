@@ -11,7 +11,7 @@ jobs:
       - name: Get data with curl
         run: curl https://wc2sk6.deta.dev/
   deploy:
-    needs: test
+    needs: test_pre
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2 #Be sure you check-out the repo first. Deta CLI needs access to the files
