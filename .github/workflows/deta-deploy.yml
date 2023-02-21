@@ -10,7 +10,7 @@ jobs:
   test_pre:
     runs-on: ubuntu-latest
     steps:
-    	# Test if the url returns a valid response
+      # Test if the url returns a valid response
       - name: Get data with curl
         run: curl ${{ env.TEST_URL }}
         
