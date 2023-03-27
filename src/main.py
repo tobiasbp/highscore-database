@@ -1,23 +1,35 @@
-from fastapi import FastAPI, HTTPException, Request
-import uvicorn
+from typing import Union, TypedDict
 
+from fastapi import FastAPI, HTTPException, Request
+from deta import Deta
+#import uvicorn
+
+class Query(TypedDict):
+    name: str
+    klov_id: int
+    key: str
+
+# When running on a Micro, no project
+# key is needed here as it's on the micro.
 app = FastAPI()
 
-# Example data which will come from a database in the future
-game_list = [
-    {
-    	"id": 0,
-        "name": "Space Invaders"
-    }, 
-    {
-        "id": 1,
-        "name": "Pac-Man"
-    },
-    {
-        "id": 2,
-        "name": "Donkey Kong"
-    }
-]
+
+deta = Deta()
+
+
+games = deta.Base("games")
+
+# A few sample games
+game_data = [
+    {"name": "Space Invaders", "klov-id": "9662", "key": "g2y9a6nl0lbb"},
+    {"name": "Donkey Kong", "klov-id": "7610", "key": "w83if6lv023r"}
+    ]
+
+# Add games to database
+for game in game_data:
+    r = games.put(data=game)
+    print(f"Added game to database: {r}")
+
 
 score_list = [
     {
@@ -50,9 +62,24 @@ score_list = [
 async def index():
     return {"message": "Hello, world!"}
 
+# FIXME: Query is a dict, not a str
 @app.get("/v1/games/")
-async def games():
-    return [{"id": game["id"], "name": game["name"]} for game in game_list]
+async def get_games(
+    query: Union[str, None] = None,
+    limit: int = 100,
+    last: Union[str, None] = None):
+    """
+    Get games
+    """
+    return games.fetch(query=query, limit=limit, last=last)
+
+"""
+@app.get("/v1/scores/{id}")
+async def scores(id):
+
+    return games.get(id, {"error": f"Unknown game ID: {id}"}) 
+
+    #raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 @app.post("/v1/games/")
 async def games(request: Request):
@@ -63,13 +90,6 @@ async def games(request: Request):
     game_list.append({"id": id, "name": game_data["name"]})
     return game_list[id]
 
-@app.get("/v1/scores/{id}")
-async def scores(id):
-    if type(id) == type(int()):
-        for i, game in enumerate(game_list):
-            if str(game["id"]) == id:
-                return {"id": game["id"], "name": game["name"], "scores": score_list[i]["scores"]}
-    raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
 @app.post("/v1/scores/{id}")
 async def scores(id, request: Request):
@@ -93,6 +113,7 @@ async def scores(id, request: Request):
                         rank = i + 1
                 return {"rank": rank}
     raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
+"""
 
-if __name__ == '__main__':
-    uvicorn.run("main:app", host="localhost", port=6050, reload=True)
+#if __name__ == '__main__':
+#    uvicorn.run("main:app", host="localhost", port=6050, reload=True)
