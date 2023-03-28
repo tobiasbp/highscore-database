@@ -69,9 +69,16 @@ async def get_games(
     limit: int = 100,
     last: Union[str, None] = None):
     """
-    Get games
+    Get a paginated list of all games
     """
     return games.fetch(query=query, limit=limit, last=last)
+
+@app.get("/v1/games/{key}")
+async def get_game(key: str):
+    """
+    Get a single game
+    """
+    return games.get(key)
 
 """
 @app.get("/v1/scores/{id}")
