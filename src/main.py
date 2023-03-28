@@ -19,6 +19,7 @@ deta = Deta()
 
 games = deta.Base("games")
 players = deta.Base("players")
+scores = deta.Base("scores")
 
 # A few sample games
 game_data = [
@@ -41,34 +42,17 @@ player_data = [
 for p in player_data:
     players.put(data=p)
 
-"""
-score_list = [
-    {
-    	"id": 0,
-        "scores": [
-            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
-            {"score": 500, "user": "MemeWizard42"},
-            {"score": 200, "user": "Noob1234"}
-        ]
-    }, 
-    {
-        "id": 1,
-        "scores": [
-            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
-            {"score": 500, "user": "MemeWizard42"},
-            {"score": 200, "user": "Noob1234"}
-        ]
-    },
-    {
-        "id": 2,
-        "scores": [
-            {"score": 1000, "user": "Xx_Epic_Gamer_xX"},
-            {"score": 500, "user": "MemeWizard42"},
-            {"score": 200, "user": "Noob1234"}
-        ]
-    }
+score_data = [
+    {"game_key": "g2y9a6nl0lbb", "score": 1000, "player_key": "sffa5zwu38di", "key": "td38yf6k4n5y"},
+    {"game_key": "g2y9a6nl0lbb", "score": 1100, "player_key": "fbd1opqszmht", "key": "2ouqv1h0g3t3"},
+    {"game_key": "w83if6lv023r", "score": 5800, "player_key": "fbd1opqszmht", "key": "qbom1524u1r7"},
+    {"game_key": "w83if6lv023r", "score": 9800, "player_key": "dj3usnatdbi4", "key": "90mx0waulyxq"},
+    {"game_key": "w83if6lv023r", "score": 6600, "player_key": "sffa5zwu38di", "key": "kelpz1f588z3"},
 ]
-"""
+
+for s in score_data:
+    scores.put(s)
+
 
 @app.get("/")
 async def index():
@@ -107,11 +91,18 @@ async def get_players(
     return players.fetch(query=query, limit=limit, last=last)
 
 @app.get("/v1/players/{player_key}")
-async def get_game(player_key: str):
+async def get_player(player_key: str):
     """
     Get a single player
     """
     return players.get(player_key)
+
+@app.get("/v1/players/{player_key}/scores")
+async def get_player_scores(player_key: str):
+    """
+    Get scores for a player
+    """
+    return scores.fetch(query={"player_key": player_key})
 
 """
 @app.get("/v1/scores/{game_key}")
