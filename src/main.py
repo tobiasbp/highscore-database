@@ -18,6 +18,7 @@ deta = Deta()
 
 
 games = deta.Base("games")
+players = deta.Base("players")
 
 # A few sample games
 game_data = [
@@ -30,7 +31,17 @@ for game in game_data:
     r = games.put(data=game)
     print(f"Added game to database: {r}")
 
+player_data = [
+    {"name": "Xx_Epic_Gamer_xX", "key": "sffa5zwu38di"},
+    {"name": "MemeWizard42", "key": "fbd1opqszmht"},
+    {"name": "Noob1234", "key": "dj3usnatdbi4"}
+]
 
+# Add players to database
+for p in player_data:
+    players.put(data=p)
+
+"""
 score_list = [
     {
     	"id": 0,
@@ -57,10 +68,12 @@ score_list = [
         ]
     }
 ]
+"""
 
 @app.get("/")
 async def index():
     return {"message": "Hello, world!"}
+
 
 # FIXME: Query is a dict, not a str
 @app.get("/v1/games/")
@@ -73,18 +86,38 @@ async def get_games(
     """
     return games.fetch(query=query, limit=limit, last=last)
 
-@app.get("/v1/games/{key}")
-async def get_game(key: str):
+
+@app.get("/v1/games/{game_key}")
+async def get_game(game_key: str):
     """
     Get a single game
     """
-    return games.get(key)
+    return games.get(game_key)
+
+
+# FIXME: Query is a dict, not a str
+@app.get("/v1/players/")
+async def get_players(
+    query: Union[str, None] = None,
+    limit: int = 100,
+    last: Union[str, None] = None):
+    """
+    Get a paginated list of all players
+    """
+    return players.fetch(query=query, limit=limit, last=last)
+
+@app.get("/v1/players/{player_key}")
+async def get_game(player_key: str):
+    """
+    Get a single player
+    """
+    return players.get(player_key)
 
 """
-@app.get("/v1/scores/{id}")
+@app.get("/v1/scores/{game_key}")
 async def scores(id):
 
-    return games.get(id, {"error": f"Unknown game ID: {id}"}) 
+    return scores.get(id, {"error": f"Unknown game ID: {id}"})
 
     #raise HTTPException(status_code=404, detail=f"Game with id '{id}' not found")
 
