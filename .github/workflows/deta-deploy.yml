@@ -1,14 +1,24 @@
-name: Deploy to Deta
-on: push
+name: Push/release to Deta Space
+
+on:
+  push:
+  release:
+    types: [published]
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  push-to-space:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2 #Be sure you check-out the repo first. Deta CLI needs access to the files
-      - uses: BogDAAAMN/deta-deploy-action@v1.0.1
+      - uses: actions/checkout@v3
+      - name: Deta Space Deployment Github Action
+        uses: neobrains/space-deployment-github-action@v0.4
         with:
-          deta-access-token: ${{ secrets.DETA_TOKEN }} #Deta access token https://docs.deta.sh/docs/cli/auth
-          deta-name: 'api' #Deta Micro name https://docs.deta.sh/docs/cli/commands/#deta-clone
-          deta-project: 'highscore-database' #Optional: Deta project name https://docs.deta.sh/docs/cli/commands/#deta-clone
-          deta-project-dir: '.' #Optional: directory to be deployed on Deta. Default is the root "." 
+          access_token: ${{ secrets.DETA_ACCESS_TOKEN }}
+          project_id: ${{ secrets.DETA_PROJECT_ID }}
+          # Push on push to main branch
+          space_push: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+          # Release if the is a release
+          space_release: ${{ github.event_name == 'release' }}
+          list_on_discovery: false
+          release_version: ${{ github.event.release.tag_name }}
