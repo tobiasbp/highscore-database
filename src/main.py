@@ -78,6 +78,13 @@ async def get_game(game_key: str):
     """
     return games.get(game_key)
 
+@app.get("/v1/games/{game_key}/scores")
+async def get_game_scores(game_key: str):
+    """
+    Get scores for a game
+    """
+    return scores.fetch(query={"game_key": game_key})
+
 
 # FIXME: Query is a dict, not a str
 @app.get("/v1/players/")
