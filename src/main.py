@@ -21,11 +21,18 @@ games = deta.Base("games")
 players = deta.Base("players")
 scores = deta.Base("scores")
 
+# Users have access to the database and can modify data
+# Players are accounts connected to scores
+
+# Contains a unique token
+# Token allows you to manipulate the database
+access_tokens = deta.Base("access_tokens")
+
 # A few sample games
 game_data = [
     {"name": "Space Invaders", "klov-id": "9662", "key": "g2y9a6nl0lbb"},
     {"name": "Donkey Kong", "klov-id": "7610", "key": "w83if6lv023r"}
-    ]
+]
 
 # Add games to database
 for game in game_data:
@@ -53,6 +60,10 @@ score_data = [
 for s in score_data:
     scores.put(s)
 
+# Used to instanciate an access token
+# Deta generated key is used as token
+#access_tokens.put(data={})
+
 
 @app.get("/")
 async def index():
@@ -78,12 +89,30 @@ async def get_game(game_key: str):
     """
     return games.get(game_key)
 
+
 @app.get("/v1/games/{game_key}/scores")
-async def get_game_scores(game_key: str):
+async def get_game_scores(
+	game_key: str, 
+	limit: int = 100, 
+	last: Union[str, None] = None):
     """
     Get scores for a game
     """
-    return scores.fetch(query={"game_key": game_key})
+
+    return scores.fetch(query={"game_key": game_key}, limit=limit, last=last)
+
+
+@app.post("/v1/games/{game_key}/scores")
+async def post_game_scores(
+	game_key: str,
+	player_key: str,
+	score: int):
+	"""
+	Post scores on a game
+	"""
+	
+	# Returns the new score item
+	return score.put(data={"game_key": game_key, "score": score, "player_key": player_key})
 
 
 # FIXME: Query is a dict, not a str
@@ -97,6 +126,16 @@ async def get_players(
     """
     return players.fetch(query=query, limit=limit, last=last)
 
+
+@app.post("/v1/players/")
+async def post_players(name: str):
+    """
+    Create a new player acccount
+    """
+
+    return players.fetch(data={"name": name})
+
+
 @app.get("/v1/players/{player_key}")
 async def get_player(player_key: str):
     """
@@ -105,11 +144,15 @@ async def get_player(player_key: str):
     return players.get(player_key)
 
 @app.get("/v1/players/{player_key}/scores")
-async def get_player_scores(player_key: str):
-    """
-    Get scores for a player
-    """
-    return scores.fetch(query={"player_key": player_key})
+async def get_player_scores(
+	player_key: str,
+	limit: int = 100, 
+	last: Union[str, None] = None):
+	"""
+	Get scores for a player
+	"""
+	return scores.fetch(query={"player_key": player_key}, limit=limit, last=last)
+
 
 """
 @app.get("/v1/scores/{game_key}")

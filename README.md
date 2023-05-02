@@ -27,6 +27,22 @@ If you want the list of scores on a specific game, you can use the following com
 curl http://localhost:6050/v1/scores/0
 ```
 
+# Endpoints
+
+## GET
+
+* */v1/games*
+* */v1/games/{game_id}*
+* */v1/games/{game_id}/scores*
+* */v1/players*
+* */v1/players/{player_id}*
+* */v1/players/{player_id}/scores*
+
+## POST
+
+* */v1/games/{game_id}/scores*
+* */v1/players*
+
 # Dependencies
 
 We are building our api with [FastAPI](https://fastapi.tiangolo.com/)
