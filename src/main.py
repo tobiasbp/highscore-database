@@ -106,13 +106,18 @@ async def get_game_scores(
 async def post_game_scores(
 	game_key: str,
 	player_key: str,
-	score: int):
+	score: int,
+	access_token: str):
 	"""
 	Post scores on a game
 	"""
 	
 	# Returns the new score item
-	return score.put(data={"game_key": game_key, "score": score, "player_key": player_key})
+	# Tests if item with key 'access_token' in access_tokens
+	if access_tokens.get(key=access_token):
+		return scores.put(data={"game_key": game_key, "score": score, "player_key": player_key})
+	else:
+		raise HTTPException(status_code=401, detail=f"Invalid access token")
 
 
 # FIXME: Query is a dict, not a str
@@ -128,12 +133,18 @@ async def get_players(
 
 
 @app.post("/v1/players/")
-async def post_players(name: str):
+async def post_players(
+    name: str,
+    access_token: str):
     """
     Create a new player acccount
     """
 
-    return players.fetch(data={"name": name})
+    # Tests if item with key 'access_token' in access_tokens
+    if access_tokens.get(key=access_token):
+    	return players.put(data={"name": name})
+    else:
+        raise HTTPException(status_code=401, detail=f"Invalid access token")
 
 
 @app.get("/v1/players/{player_key}")
