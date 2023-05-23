@@ -5,3 +5,6 @@ micros:
     src: src
     engine: python3.9
     primary: true
+    public-routes:
+      - "/v1/*"
+    
